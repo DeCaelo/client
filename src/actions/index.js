@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { browserHistory } from 'react-router';
-import { AUTH_USER, UNAUTH_USER, AUTH_ERROR } from './types';
+import {
+  AUTH_USER,
+  UNAUTH_USER,
+  AUTH_ERROR,
+  FETCH_MESSAGE
+  } from './types';
 
 const ROOT_URL = 'http://localhost:8000';
 
@@ -55,13 +60,30 @@ export function signoutUser() {
   return { type: UNAUTH_USER };
 }
 
+/// with redux thunk
 export function fetchMessage() {
   return function(dispatch) {
     axios.get(ROOT_URL, {
       headers: { authorization: localStorage.getItem('token') }
     })
       .then(response => {
-        console.log(response);
+        dispatch({
+          type: FETCH_MESSAGE,
+          payload: response.data.message
+        });
       });
   }
 }
+
+/// with redux promise
+
+// export function fetchMessage() {
+//   const request = axios.get(ROOT_URL, {
+//       headers: { authorization: localStorage.getItem('token') }
+//     });
+
+//   return {
+//     type: FETCH_MESSAGE,
+//     payload: request
+//   }
+// }
